@@ -44,14 +44,19 @@ class Admin_model extends CI_Model {
 
 	}
 
-	public function get_list($table, $where = FALSE)
+	public function get_list($table, $where = FALSE, $order = FALSE)
 	{
+		// $table = "items";
+		// $where = array('item_type' => 1);
 		if($where !==FALSE)
 		{
 			$this->db->where($where);
 		}
+		$this->db->order_by($order, 'asc');
 		$q = $this->db->get($table);
 		return $q->result_array();
+		// var_dump($q->result_array());
+		// exit();
 	}
 
 	public function template_get_list($table, $where = FALSE)

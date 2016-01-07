@@ -322,6 +322,7 @@ public function add_item()
 		$this->db->where('transaction_id', $transaction_id);
 		$this->db->where('type', $type);
 		$this->db->from('transaction_items');
+		$this->db->order_by('heading', 'asc' );
 		$q = $this->db->get();
 
 		$item_list = $q->result_array();

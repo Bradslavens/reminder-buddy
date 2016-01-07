@@ -123,7 +123,7 @@ class Admin extends CI_Controller
 			$data['sides'] = $this->admin_model->get_list("sides");
 
 			$this->load->view('admin/forms_form', $data);
-			$data['forms'] = $this->admin_model->get_list('items', 2);
+			$data['forms'] = $this->admin_model->get_list('items', array('item_type' => 2), 'heading'); // two is forms
 			$this->load->view('admin/forms', $data);
 		}
 
@@ -143,7 +143,7 @@ class Admin extends CI_Controller
 
 			// load views
 			$this->load->view('admin/reminder_form', $data);
-			$data['reminders'] = $this->admin_model->get_list('items', 1);
+			$data['reminders'] = $this->admin_model->get_list('items', array('item_type' => 1), 'heading'); // one is reminders
 			$this->load->view('admin/reminders', $data);
 		}
 			// item types
