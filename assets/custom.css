@@ -1,0 +1,85 @@
+/*// custom css 
+body {
+	background-color: #eee;
+	background-image: url("http://www.wallpaperno.com/download/view?resolution=960x800&file=MTI4MHgxMDI0LzIwMTIxMDI4L21hZCBtZW4gMTI4MHgxMDI0IHdhbGxwYXBlcl93d3cud2FsbHBhcGVybm8uY29tXzEuanBn&name=bWFkX21lbl8xMjgweDEwMjRfd2FsbHBhcGVy");
+    background-repeat: repeat;
+	color: black;
+}*/
+
+body {
+	color: #fff;
+	background-color: #fff;
+	background-image: url("http://www.wallpaperno.com/download/view?resolution=960x800&file=MTI4MHgxMDI0LzIwMTIxMDI4L21hZCBtZW4gMTI4MHgxMDI0IHdhbGxwYXBlcl93d3cud2FsbHBhcGVybm8uY29tXzEuanBn&name=bWFkX21lbl8xMjgweDEwMjRfd2FsbHBhcGVy");
+}
+
+.transaction_box {
+	background-color: rgba(67, 69, 78, 1);
+	border: solid 1em;
+	border-color: #eee;
+	border-radius: 1em;
+	padding: 2em;
+	margin: 1em;
+	color: #fff;
+}
+
+.transaction_box img {
+	height: 5em;
+	width: 5em;
+}
+
+#transaction_caption {
+	margin-top: 1em;
+}
+
+.new_transaction_text {
+	color: #fff;
+	margin: auto 0px;
+	font-size: 1.5em;
+}
+
+.new_transaction_box {
+ 	background-color: rgba(159, 83, 75, 1);
+	border: solid 1em;
+	border-color: #eee;
+	border-radius: 1em;
+	padding: 2em;
+	margin: 1em;
+	height: 10em;
+	width: 20em;
+
+}
+
+.panel {
+	color: black;
+}
+
+.list-group-item {
+	color: black;
+}
+/*
+.btn-default {
+	background-color: #fff;
+	opacity: 0;
+	color: #fff;
+	border: solid 3px;
+	border-color: #fff;
+}*/
+
+.nav-pills li {
+	border-width: 2px;
+	border-color: white;
+	border-radius: 10px;
+	border-style: solid;
+	margin: 20px;
+}
+.nav-pills a {
+	color: white;
+}
+
+#search_item_results {
+	background-color: rgba(58, 48, 38, .5);
+}
+
+#search_item_results a {
+	color: white;
+}
