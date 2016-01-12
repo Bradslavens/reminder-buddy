@@ -21,6 +21,5 @@
 		<p>I'll be the transaction coordinator for Slavens Realty. 
 		For a smooth transaction we ask that you funnel all documents through me for broker review and then signature.
 		Let me know if you need anything.</p>
-
 	</div>
 </div>

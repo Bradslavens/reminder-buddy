@@ -11,7 +11,7 @@ class Cron_reminders extends CI_Controller {
 
 	public function send ($token = 1)
 	{
-		if($token === 677){
+		if($token == '677'){
 
 			// transactions status = active '1'
 			$transactions = $this->transactions_model->get_item_by_id('transactions', array('status' => 1));
@@ -67,11 +67,18 @@ class Cron_reminders extends CI_Controller {
 					$this->email->subject($data['transaction_name']);
 					$this->email->message($msg); 
 					$this->email->set_alt_message('error');
-					echo $msg;
-					// $this->email->send();
+					// echo $msg;
+					$this->email->send();
+
+
+					// mark form mail send complete
 			}
 				
 		}
+	}
+	else
+	{
+		echo "cronjob not working";
 	}
 }
 ?>
