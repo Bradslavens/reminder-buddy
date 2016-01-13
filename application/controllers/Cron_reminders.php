@@ -75,10 +75,10 @@ class Cron_reminders extends CI_Controller {
 			}
 				
 		}
-	}
-	else
-	{
-		echo "cronjob not working";
+		else
+		{
+			echo "cronjob not working";
+		}
 	}
 }
 ?>
