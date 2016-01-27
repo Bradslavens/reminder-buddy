@@ -99,8 +99,8 @@ class Proc extends CI_Controller {
 				$this->email->subject('New Transaction Instructions - see manual for details');
 				$this->email->message($msg); 
 				$this->email->set_alt_message('This is the alternative message, call Brad');
-				echo $msg;
-				// $this->email->send();
+				// echo $msg;
+				$this->email->send();
 
 			}
 
@@ -206,7 +206,8 @@ class Proc extends CI_Controller {
 						$this->email->set_mailtype("html");
 
 						$this->email->from(TC_EMAIL, TC_NAME);
-						$this->email->to($this->input->post('email')); 
+						// $this->email->to($this->input->post('email')); 
+						$this->email->to('bradslavens@gmail.com'); 
 						// $this->email->cc('another@another-example.com'); 
 						$this->email->bcc(BROKER_COPY_EMAIL); 
 
@@ -220,8 +221,8 @@ class Proc extends CI_Controller {
 						$this->email->subject($s);
 						$this->email->message($msg); 
 						$this->email->set_alt_message('This is the alternative message');
-						// $this->email->send();
-						echo $msg;
+						$this->email->send();
+						// echo $msg;
 					}
 				}
 			}
@@ -313,11 +314,11 @@ class Proc extends CI_Controller {
 					$data['message'] = $msg;
 					$message = $this->load->view('mail/reminder', $data, TRUE);
 					$message .= $this->load->view('mail/deb_sig', $data, TRUE);
-					echo $message;
+					// echo $message;
 					$this->email->message($message); 
 					$this->email->set_alt_message($msg);
 
-					// $this->email->send();
+					$this->email->send();
 
 					echo $this->email->print_debugger();
 

@@ -98,7 +98,6 @@
 	  		</tr>
 	  		<!-- end list -->
 	  		<?php endforeach; ?>
-	  		<button type ="submit" class = "btn btn-default" title = "mail selected reminders"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></button>
 	  	</form>
 	  	</table>
 	</div>

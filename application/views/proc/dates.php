@@ -1,7 +1,7 @@
 <div id="dates" class="container">
 	<div class="panel panel-default">
 	  <!-- Default panel contents -->
-	  <div class="panel-heading">Transaction Dates</div>
+	  <div class="panel-heading">Transaction Dates <a href="http://www.timeanddate.com/date/dateadd.html" target="_blank">Date Calculator</a></div>
 
 	  <!-- Table -->
 	  <table class="table">

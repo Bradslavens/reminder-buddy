@@ -274,7 +274,6 @@ public function add_item()
 		}
 		elseif($transaction_side == 4) // seller
 		{
-			echo "buyer <br />";
 			if($item_party == 9 ) { $new_party = 1; }
 			elseif($item_party == 10 ) { $new_party = 13; }
 			elseif($item_party == 11 ) { $new_party = 3;}

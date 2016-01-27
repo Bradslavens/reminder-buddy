@@ -77,8 +77,18 @@
 				<li>Click 'send'</li>
 				<li>Select the newly added forms from the bottom - do not re sort - they are below the red pdf forms</li>
 				<li>Send to our agent and cc me</li>
-
-				START HERE 
+			</ul>
+		<li>Send Extra Forms</li>
+			<ul>
+				<li>Click esign</li>
+				<li>Click Browse</li>
+				<li>Go to the file in google drive.</li>
+				<li>Upload MLS Client (if buyer), MLS Agent if Seller, PUBR(realist property profile/tax records), PP(First American), and comps</li>
+					<ul>
+						<li>If we represent the buyer - send the MLS Agent copy to our agent only</li>
+					</ul>
+				<li>continue to send to esign</li>
+				<li>Select Docusign Recipients - do in order</li>
 			</ul>
 		<li>In the transaction Click - Apply templates</li>
 			<ul>
@@ -96,6 +106,13 @@
 					</ul>
 			</ul>
 		<li>If we are the seller, send out seller disclosure pack 2 of 2</li>
+			<ul>
+				<li>Apply Template - Disclosure pack 2 of 2.</li>
+				<li>Click esign</li>
+				<li>Go to the bottom of the list and add the new documents( that you just added ) to the list</li>
+				<li>Continue to esign</li>
+			</ul>
+		<strong>** Click edit details in docusign to add reminders.</strong>
 	</ol>
 
 </div>

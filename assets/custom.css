@@ -7,8 +7,9 @@ body {
 }*/
 
 body {
-	color: #fff;
-	background-color: #6bdd22;
+	color: black;
+	/*background-color: #6bdd22;*/
+	background-color: gray;
 	/*background-color: #fff;*/
 	/*background-image: url("http://www.wallpaperno.com/download/view?resolution=960x800&file=MTI4MHgxMDI0LzIwMTIxMDI4L21hZCBtZW4gMTI4MHgxMDI0IHdhbGxwYXBlcl93d3cud2FsbHBhcGVybm8uY29tXzEuanBn&name=bWFkX21lbl8xMjgweDEwMjRfd2FsbHBhcGVy");*/
 }
