@@ -8,7 +8,12 @@ body {
 
 body {
 	color: #fff;
-	background-color: #fff;
+	background-color: #6bdd22;
+	/*background-color: #fff;*/
+	/*background-image: url("http://www.wallpaperno.com/download/view?resolution=960x800&file=MTI4MHgxMDI0LzIwMTIxMDI4L21hZCBtZW4gMTI4MHgxMDI0IHdhbGxwYXBlcl93d3cud2FsbHBhcGVybm8uY29tXzEuanBn&name=bWFkX21lbl8xMjgweDEwMjRfd2FsbHBhcGVy");*/
+}
+
+#transaction-list {
 	background-image: url("http://www.wallpaperno.com/download/view?resolution=960x800&file=MTI4MHgxMDI0LzIwMTIxMDI4L21hZCBtZW4gMTI4MHgxMDI0IHdhbGxwYXBlcl93d3cud2FsbHBhcGVybm8uY29tXzEuanBn&name=bWFkX21lbl8xMjgweDEwMjRfd2FsbHBhcGVy");
 }
 
@@ -82,4 +87,32 @@ body {
 
 #search_item_results a {
 	color: white;
+}
+
+#greeting {
+	font-family: 'Lobster', cursive;
+	font-weight: bold;
+	font-size: 5em;
+	margin-top: 20%;
+	margin-bottom: 5%;
+    -ms-transform: rotate(7deg); /* IE 9 */
+    -webkit-transform: rotate(7deg); /* Chrome, Safari, Opera */
+     transform: rotate(-7deg);
+}
+
+.modal-dialog {
+	margin-top: 15%;
+}
+
+#login {
+	display: block;
+	background-color: #6bdd22;
+	background-image: none;
+	text-align: center;
+}
+
+.modal-title {
+	
+	color: black;
+
 }

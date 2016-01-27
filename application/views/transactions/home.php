@@ -1,6 +1,6 @@
 
 <!-- HOME -->
-<div class="container">
+<div id="home" class="container">
 	<div class="row">
 		<div class="col col-md-2">
 		</div>

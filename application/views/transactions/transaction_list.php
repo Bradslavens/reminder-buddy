@@ -1,4 +1,4 @@
-<div class="container">
+<div id="transaction-list" class="container">
 	<div class="row">
 		<div class="col col-md-2">
 		</div>

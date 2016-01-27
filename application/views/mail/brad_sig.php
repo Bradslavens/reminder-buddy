@@ -23,7 +23,7 @@ img	{
 
 <div id= "outer">
 	<div id = "inner">
-		<img id = "brad_sig" src="<?php echo site_url('/assets/brad-jcp.gif'); ?>">
+		<img id = "brad_sig" src="<?php echo '/assets/brad-jcp.gif'; ?>">
 		<div id = "sig">
 			<p>Bradley D. Slavens</p>
 			<p>Broker/CEO</p>

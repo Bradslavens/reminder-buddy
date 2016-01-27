@@ -89,7 +89,7 @@ class Proc extends CI_Controller {
 				$this->load->library('email');
 				$this->email->set_mailtype("html");
 
-				$this->email->from(TC_EMAIL, 'TC Slavens');
+				$this->email->from(TC_EMAIL, 'Brad :)');
 				$this->email->to(TC_EMAIL); 
 				$this->email->bcc(BROKER_COPY_EMAIL); 
 				$data['name'] = "Debbie";

@@ -25,5 +25,7 @@
     <!-- load custom css  -->
     <link rel="stylesheet" type="text/css" href="/assets/custom.css">
     
+    <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+    
   </head>
   <body>
