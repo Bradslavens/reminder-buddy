@@ -8,7 +8,7 @@
 
 		<?php $form_data = array(
 			'class' => 'form-inline'); 
-		echo form_open(site_url('/admin/index/'.strtolower($title).'/add_item')	, $form_data); ?>
+		echo form_open('/admin/index/'.strtolower($title).'/add_item', $form_data); ?>
 			  <div class="form-group">
 			    <label for="subject">Abbreviation</label>
 			    <input name="heading" type="text" class="form-control" id="heading" placeholder="subject">

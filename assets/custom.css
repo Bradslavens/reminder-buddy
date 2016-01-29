@@ -71,15 +71,16 @@ body {
 	border-color: #fff;
 }*/
 
-.nav-pills li {
+.nav-pills li, .btn-default {
 	border-width: 2px;
 	border-color: white;
 	border-radius: 10px;
 	border-style: solid;
 	margin: 20px;
 }
-.nav-pills a {
+.nav-pills a, .btn-default {
 	color: white;
+	background:transparent;
 }
 
 #search_item_results {

@@ -236,4 +236,33 @@ class Admin extends CI_Controller
 		$this->load->view('templates/footer', $data);
 	}
 
+	public function edit_item($item = NULL){
+		
+		if($this->input->post()){
+			// update item
+			$this->admin_model->update_item2();
+
+			// get item info
+			$data['item_dets'] =	$this->admin_model->get_item_dets($this->input->post('id'));
+			$data['date_types'] = $this->admin_model->get_list('date_types');
+			$data['parties'] = $this->admin_model->get_list('parties');
+		}
+
+		if($item !== NULL){
+			// get item info
+		$data['item_dets'] =	$this->admin_model->get_item_dets($item);
+		$data['date_types'] = $this->admin_model->get_list('date_types');
+		$data['parties'] = $this->admin_model->get_list('parties');
+
+		}
+
+		$this->load->view('templates/header');
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+
+		$this->load->view('admin/edit_item', $data);
+
+		$this->load->view('templates/header');
+
+	}
 }
