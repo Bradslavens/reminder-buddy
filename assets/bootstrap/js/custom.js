@@ -111,13 +111,13 @@
 	  	$(".del").click(function()
 	  	{
 	  		// first delete the item
-	  		var hr  = 'del_item'; //$(location).attr('href').split('#')[0] + "/del_item"; // get the url and remove the hash
+	  		var hr  = '/admin/index/forms/del_item'; 
 	  		console.log(hr);
 	  		var c = confirm("Ok to delete this item?"); // confimr ok to delete
 	  		if(c == true){
 	  			var cId =$(this).parent().siblings(".id").text();  // get the id
 	  			var d = {id: cId}; // set up the data array
-	  			console.log(d);
+	  			console.log('id' + cId);
 	  			$.post(hr, d, function(result){
 	  				console.log(result);
 	  				console.log('done');
