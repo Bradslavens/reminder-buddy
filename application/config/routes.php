@@ -59,6 +59,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $route['default_controller'] = 'welcome';
 $route['transactions/(:any)'] = 'transactions/$1';
+// $route['/audit/(:any)'] = 'audit/$1';
 $route['assets'] = 'assets';
 $route['(:any)']= 'welcome/view/$1';
 $route['404_override'] = 'errors/page_missing';
