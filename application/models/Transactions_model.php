@@ -33,6 +33,13 @@ class Transactions_model extends CI_Model {
 		return $q->result_array();
 	}
 
+	public function get_transactions($status = NULL){
+		// get all transactions
+		$this->db->where('status', $status);
+		$q = $this->db->get('transactions');
+		return $q->result_array();
+	}
+
 	public function add_transaction_date()
 	{
 		$data['calendar_date'] = $this->input->post('date');
@@ -366,7 +373,14 @@ public function add_item()
 	// 	//
 	// }
 
+	public function get_transaction_items2($transaction_id, $item_type){
 
+		$this->db->where('type', $item_type);
+		$this->db->where('transaction_id', $transaction_id);
+		$q = $this->db->get('transaction_items');
+
+		return $q->result_array();
+	}
 
 	public function get_transaction_items($type, $transaction_id) // 2 is form 1 is reminder
 	{
@@ -773,6 +787,28 @@ public function add_item()
 		return $q->result_array();
 	}
 
+	public function get_transaction_item_parties2($transaction_party_id, $complete){
+
+		$this->db->where('transaction_party_id', $transaction_party_id);
+		$this->db->where('complete', $complete);
+
+		$q = $this->db->get('transaction_item_parties');
+		return $q->result_array();
+	}
+
+	public function get_items_due($transaction_party_id, $complete){
+
+		$tips = $this->get_transaction_item_parties2($transaction_party_id, $complete);
+
+		// now find out which items are due
+		foreach ($tips as $tip) {
+			# code...get the due date
+			$this->db->select('date_type, days');
+			$this->db->join('transaction_items', 'transaction_items.item_id = items.id');
+			$due_dates = $this->db->get('items');
+		}
+	}
+
 	public function get_items_not_complete($tid, $party){
 
 		$this->db->from('transaction_item_parties');
@@ -784,4 +820,36 @@ public function add_item()
 		return $q->result_array();
 	}
 
+	public function get_past_due_reminders($contact_id, $transaction_id){
+
+		$this->db->select('calendar_date');
+		$this->db->where('transaction_dates.transaction',$transaction_id);
+		$this->db->where('transaction_dates.date', 1);
+		$sql = $this->db->get_compiled_select('transaction_dates');
+		$sql1 = '('.$sql.')';
+
+
+		$this->db->select('transaction_item_parties.id AS tip_id, items.heading AS heading, items.body AS body, items.days AS days, items.date_type AS date_type');
+		$this->db->from('transaction_item_parties');
+		$this->db->join('transaction_items', 'transaction_item_parties.transaction_item_id = transaction_items.id' );
+		$this->db->join('items', 'transaction_items.item_id = items.id ' );
+		$this->db->join('transactions', 'transaction_items.transaction_id = transactions.id' );
+		$this->db->where('transaction_item_parties.complete', 0); // incomplete
+		$this->db->where('transaction_item_parties.transaction_party_id', $contact_id);
+		$this->db->where($sql1. ' < date_sub(curdate(), interval days day)', NULL
+			);
+		$q = $this->db->get();
+		return $q->result_array();
+	}
+
+	public function set_items_to_complete($data){
+		//
+		
+		foreach ($data as $tip) {
+			# code...
+			$ra = array('complete' => 1);
+			$this->db->where('id', $tip['tip_id']);
+			$this->db->update('transaction_item_parties', $ra);
+		}
+	}
 }
