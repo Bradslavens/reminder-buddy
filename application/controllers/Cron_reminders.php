@@ -43,8 +43,8 @@ class Cron_reminders extends CI_Controller {
 						$this->email->subject($t['name']);
 						$this->email->message($msg); 
 						$this->email->set_alt_message('error');
-						echo $msg;
-						// $this->email->send();
+						// echo $msg;
+						$this->email->send();
 
 						// send debug info
 						if(!$this->email->print_debugger()){
