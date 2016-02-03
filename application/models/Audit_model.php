@@ -23,7 +23,7 @@ class Audit_model extends CI_Model {
 			$cis = array(
 				'transaction_item_id' => $cur_item['item_id'],
 				'transaction_party_id' => $cur_item['party_id'],
-				'complete' => $cur_item['complete'],
+				'complete' => 0,
 				'audit' => $aud_num
 				);
 			$this->db->insert('transaction_item_parties', $cis);
@@ -32,4 +32,10 @@ class Audit_model extends CI_Model {
 		// make audit the number of the audit
 	}
 
+	public function get_transactions($status){
+
+		$this->db->where('status', $status);
+		$q =$this->db->get('transactions');
+		return $q->result_array();
+	}
 }

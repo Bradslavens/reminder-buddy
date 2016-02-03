@@ -382,7 +382,7 @@ public function add_item()
 		return $q->result_array();
 	}
 
-	public function get_transaction_items($type, $transaction_id) // 2 is form 1 is reminder
+	public function get_transaction_items($type, $transaction_id, $aud) // 2 is form 1 is reminder
 	{
 		// first get all the items
 		$this->db->select('transaction_items.id AS id, items.queue AS queue_id, queues.name AS queue, items.heading AS heading, items.body AS body, notes');
@@ -404,6 +404,7 @@ public function add_item()
 			// check if all complete
 			$this->db->where('complete', 0); // check if there are any transaction items parties that are not signed
 			$this->db->where('transaction_item_id', $transaction_item['id']);
+			$this->db->where('transaction_item_parties.audit', $aud);
 			$q = $this->db->get('transaction_item_parties');
 			if($q->num_rows() == 0)
 			{
@@ -426,6 +427,7 @@ public function add_item()
 				$this->db->where('complete', 0); // select incomplete
 				$this->db->where('transaction_item_id', $transaction_item['id']);
 				$this->db->where('transaction_party_id', $party_c['id']);
+				$this->db->where('transaction_item_parties.audit', $aud);
 				$qe = $this->db->get('transaction_item_parties');
 				if($qe->num_rows() > 0) // if 0 rows then this signer  is complete
 				{
@@ -455,6 +457,7 @@ public function add_item()
 				$this->db->where('complete', 0);
 				$this->db->where('transaction_item_id', $transaction_item['id']);
 				$this->db->where('transaction_party_id', $party_c['id']);
+				$this->db->where('transaction_item_parties.audit', $aud);
 				$qd = $this->db->get('transaction_item_parties');
 				if($qd->num_rows() > 0)
 				{
@@ -480,6 +483,7 @@ public function add_item()
 			$this->db->join('parties', 'parties.id = transaction_parties.party');
 			$this->db->join('contacts', 'contacts.id = transaction_parties.contact_id');
 			$this->db->where('transaction_item_id',$transaction_item['id']);
+			$this->db->where('transaction_item_parties.audit', $aud);
 			$q2 = $this->db->get();
 			$item_list[$i]['parties'] = $q2->result_array();
 			$i++;
@@ -822,6 +826,8 @@ public function add_item()
 
 	public function get_past_due_reminders($contact_id, $transaction_id){
 
+		// get calendar date for transaction to see if it's due
+
 		$this->db->select('calendar_date');
 		$this->db->where('transaction_dates.transaction',$transaction_id);
 		$this->db->where('transaction_dates.date', 1);
@@ -835,10 +841,15 @@ public function add_item()
 		$this->db->join('items', 'transaction_items.item_id = items.id ' );
 		$this->db->join('transactions', 'transaction_items.transaction_id = transactions.id' );
 		$this->db->where('transaction_item_parties.complete', 0); // incomplete
+		$this->db->where('transaction_item_parties.audit', 0); // not audit
+		$this->db->where('items.item_type', 1); // select reminders only
 		$this->db->where('transaction_item_parties.transaction_party_id', $contact_id);
 		$this->db->where($sql1. ' < date_sub(curdate(), interval days day)', NULL
 			);
 		$q = $this->db->get();
+		// $q = $this->db->get_compiled_select();
+		// printf($q);
+		// exit();
 		return $q->result_array();
 	}
 

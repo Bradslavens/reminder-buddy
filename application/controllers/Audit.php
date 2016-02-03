@@ -24,17 +24,22 @@ class Audit extends CI_Controller {
 
 		$this->load->view('templates/header');
 
-		$this->load->view('audit/home');
+		// get transaction list
+		$t = $this->audit_model->get_transactions(1);
 
-		$this->load->view('templates/footer');
+		$data['t'] = $t;
 
-		if($page = 'start_audit'){
+		$this->load->view('audit/home', $data);
+
+		if($page == 'start_audit'){
 
 			$this->load->model('transactions_model');
+
+			$_SESSION['transaction_id'] = $this->input->post('transaction');
 			// validate erros
 			// $this->form_validation->set_rules('first_name', 'First Name', 'required');
 			// duplicate duplicate the tips list
-			$this->audit_model->create_audit_list(177, 1); // enter transaction id and audit number
+			$this->audit_model->create_audit_list($this->input->post('transaction'), 1); // enter transaction id and audit number
 			// present the checklist
 
 			// delete item 
@@ -71,10 +76,13 @@ class Audit extends CI_Controller {
 			$data['date_types'] = $this->transactions_model->get_item_by_id('date_types');
 			// get parties
 			$data['parties'] = $this->transactions_model->get_item_by_id('parties');
-			$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $_SESSION['transaction_id'] = 177);// get checklist items   should be forms only
+			$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $_SESSION['transaction_id'], 1);// get checklist items   should be forms only
 			$this->load->view('proc/checklist', $data);
 			// add a compare button
 		}
+
+
+		$this->load->view('templates/footer');
 
 	}
 

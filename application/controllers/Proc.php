@@ -18,10 +18,10 @@ class Proc extends CI_Controller {
 		$this->load->model('user_model');
 	}
 
-	public function test()
-	{
-		// for testing
-	}
+	// public function test()
+	// {
+	// 	// for testing
+	// }
 
 	public function processing($section = 'cover')
 	{
@@ -149,7 +149,7 @@ class Proc extends CI_Controller {
 			$data['date_types'] = $this->transactions_model->get_item_by_id('date_types');
 			// get parties
 			$data['parties'] = $this->transactions_model->get_item_by_id('parties');
-			$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $_SESSION['transaction_id']);// get checklist items   should be forms only
+			$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $_SESSION['transaction_id'], 0);// get checklist items   should be forms only aud = 0
 			$this->load->view('proc/checklist', $data);
 		}
 
@@ -178,7 +178,7 @@ class Proc extends CI_Controller {
 			$data['date_types'] = $this->transactions_model->get_item_by_id('date_types');
 			// get parties
 			$data['parties'] = $this->transactions_model->get_item_by_id('parties');
-			$data['items'] = $this->transactions_model->get_transaction_items(1, $_SESSION['transaction_id']); // one = reminders
+			$data['items'] = $this->transactions_model->get_transaction_items(1, $_SESSION['transaction_id'],0); // one = reminders
 			$this->load->view('proc/reminders', $data);
 		}
 
