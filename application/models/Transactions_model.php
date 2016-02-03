@@ -42,7 +42,8 @@ class Transactions_model extends CI_Model {
 
 	public function add_transaction_date()
 	{
-		$data['calendar_date'] = $this->input->post('date');
+		$conv_date = date("Y-m-d", strtotime($this->input->post('date')));
+		$data['calendar_date'] = $conv_date;
 		$data['date'] = $this->input->post('date_type');		
 		$data['transaction'] = $_SESSION['transaction_id'];
 
@@ -250,56 +251,6 @@ public function add_item()
 			}
 		}
 	}
-
-	// // set transaction side
-	// private function reset_item_party($item_party)
-	// {
-	// 	$new_party = 0;
-
-	// 	// get transadtion sides
-	// 	$q = $this->get_item_by_id('transactions', array('id' => $_SESSION['transaction_id']));
-	// 	$transaction_side = $q[0]['side'];
-
-	// 	// reset item parites base on side
-	// 	if($transaction_side == 1) // buyer
-	// 	{
-	// 		if($item_party == 9 ) { $new_party = 1; }
-	// 		elseif($item_party == 10 ) { $new_party = 13; }
-	// 		elseif($item_party == 11 ) { $new_party = 3;}
-	// 		elseif($item_party == 12 ) { $new_party = 6; }
-
-
-	// 		elseif($item_party == 1 ) { $new_party = 1; }
-	// 		elseif($item_party == 3 ) { $new_party = 3; }
-	// 		elseif($item_party == 4 ) { $new_party = 4; }
-	// 		elseif($item_party == 5 ) { $new_party = 5; }
-	// 		elseif($item_party == 6 ) { $new_party = 6; }
-	// 		elseif($item_party == 7 ) { $new_party = 7; }
-	// 		elseif($item_party == 8 ) { $new_party = 8; }
-	// 		elseif($item_party == 13 ) { $new_party = 13; }
-	// 		elseif($item_party == 14 ) { $new_party = 14; }
-	// 	}
-	// 	elseif($transaction_side == 4) // seller
-	// 	{
-	// 		if($item_party == 9 ) { $new_party = 1; }
-	// 		elseif($item_party == 10 ) { $new_party = 13; }
-	// 		elseif($item_party == 11 ) { $new_party = 3;}
-	// 		elseif($item_party == 12 ) { $new_party = 6; }
-
-
-	// 		elseif($item_party == 1 ) { $new_party = 1; }
-	// 		elseif($item_party == 3 ) { $new_party = 3; }
-	// 		elseif($item_party == 4 ) { $new_party = 4; }
-	// 		elseif($item_party == 5 ) { $new_party = 5; }
-	// 		elseif($item_party == 6 ) { $new_party = 6; }
-	// 		elseif($item_party == 7 ) { $new_party = 7; }
-	// 		elseif($item_party == 8 ) { $new_party = 8; }
-	// 		elseif($item_party == 13 ) { $new_party = 13; }
-	// 		elseif($item_party == 14 ) { $new_party = 14; }
-	// 	}
-	// 	// reset item sides
-	// 	return $new_party;
-	// }
 
 
 	// set transaction side
@@ -848,7 +799,7 @@ public function add_item()
 			);
 		$q = $this->db->get();
 		// $q = $this->db->get_compiled_select();
-		// printf($q);
+		// echo $q . "<br />";
 		// exit();
 		return $q->result_array();
 	}

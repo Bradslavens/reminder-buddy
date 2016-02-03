@@ -9,7 +9,6 @@ class Cron_reminders extends CI_Controller {
 		$this->load->helper('date');
 	}
 
-
 	public function send ($token = 1)
 	{
 		if($token == '677'){
@@ -34,17 +33,22 @@ class Cron_reminders extends CI_Controller {
 						$this->load->library('email');
 						$this->email->set_mailtype("html");
 
-						$this->email->from(TC_EMAIL, 'TC Slavens');
-						$this->email->to(TC_EMAIL); 
+						$this->email->from(PROCESSING_EMAIL, 'Brad Slavens');
+						$this->email->to(BROKER_EMAIL); 
 						$this->email->bcc(BROKER_COPY_EMAIL); 
-						$msg  = $this->load->view('mail/reminders', $data, TRUE);
-						$msg .= $this->load->view('mail/deb_sig',$data,TRUE);
+						$msgp  = $this->load->view('mail/reminders', $data, TRUE);
+						$msgp .= $this->load->view('mail/deb_sig',$data,TRUE);
+
+						$msg  = $this->load->view('mail/reminders_plain', $data, TRUE);
+						$msg .= $this->load->view('mail/deb_sig_plain',$data,TRUE);
 
 						$this->email->subject($t['name']);
 						$this->email->message($msg); 
 						$this->email->set_alt_message('error');
 						// echo $msg;
 						$this->email->send();
+
+						echo $this->email->print_debugger();
 
 						// send debug info
 						if(!$this->email->print_debugger()){
@@ -53,8 +57,8 @@ class Cron_reminders extends CI_Controller {
 							$this->email->to(BROKER_COPY_EMAIL); 
 
 							$this->email->subject('email errors');
+							$this->email->set_alt_message($msgp);
 							$this->email->message($this->email->print_debugger()); 
-							$this->email->set_alt_message('error');
 							// echo $msg;
 							$this->email->send();
 						}
