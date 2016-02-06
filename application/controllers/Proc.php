@@ -206,9 +206,9 @@ class Proc extends CI_Controller {
 						$this->email->set_mailtype("html");
 
 						$this->email->from(TC_EMAIL, TC_NAME);
-						// $this->email->to($this->input->post('email')); 
-						$this->email->to('bradslavens@gmail.com'); 
-						// $this->email->cc('another@another-example.com'); 
+						$this->email->to($this->input->post('email')); 
+						// $this->email->to('bradslavens@gmail.com'); 
+						$this->email->cc(TC_EMAIL); 
 						$this->email->bcc(BROKER_COPY_EMAIL); 
 
 						$data['first_name'] = $this->input->post('first_name');

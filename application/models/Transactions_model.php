@@ -782,7 +782,6 @@ public function add_item()
 		$sql = $this->db->get_compiled_select('transaction_dates');
 		$sql1 = '('.$sql.')';
 
-
 		$this->db->select('transaction_item_parties.id AS tip_id, items.heading AS heading, items.body AS body, items.days AS days, items.date_type AS date_type');
 		$this->db->from('transaction_item_parties');
 		$this->db->join('transaction_items', 'transaction_item_parties.transaction_item_id = transaction_items.id' );
@@ -794,10 +793,12 @@ public function add_item()
 		$this->db->where('transaction_item_parties.transaction_party_id', $contact_id);
 		$this->db->where($sql1. ' < date_sub(curdate(), interval days day)', NULL
 			);
+
 		$q = $this->db->get();
 		// $q = $this->db->get_compiled_select();
 		// echo $q . "<br />";
 		// exit();
+		// var_dump($q->result_array());
 		return $q->result_array();
 	}
 
