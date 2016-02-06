@@ -1,6 +1,6 @@
 <div id="login" class="container">
   <div id="greeting" class="row">
-      Welcome Back Debbie!
+      Welcome!
   </div>
   <div id="form" class="row"><!-- Button trigger modal -->
     <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">

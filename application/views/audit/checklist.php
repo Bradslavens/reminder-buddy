@@ -17,8 +17,7 @@
         <td colspan="7">
             <!-- add new form  -->
             <?php echo validation_errors(); ?>
-            <?php $form_attributes = array('id'=>'add_form'); ?>
-            <?php echo form_open('proc/processing/checklist/'.$_SESSION['transaction_id'].'/add_form', $form_attributes); ?>
+            <?php echo form_open('audit/add_form/'.$this->session->userdata('transaction_id')); ?>
 
               <div class="form-group">
                   <label for="description">Description</label>
@@ -83,13 +82,13 @@
       <!-- add new form  -->
       <?php echo validation_errors(); ?>
       <?php $form_attributes = array('id'=>'update_checklist_status'); ?>
-      <?php echo form_open('proc/processing/checklist/'.$_SESSION['transaction_id'].'/update_checklist_status', $form_attributes); ?>
+      <?php echo form_open('audit/del_item/'.$_SESSION['transaction_id'].'/update_checklist_status', $form_attributes); ?>
       <!-- Table row and data -->
       <?php foreach ($checklist_items as $checklist_item): ?>
       <div>
         <tr>
           <td><?php if($checklist_item['all_signed'] == 0){ echo "Incomplete"; }else{echo "Complete"; } ?><br />
-            <a href="<?php echo 'del_item/' . $checklist_item['id']; ?>"><span title = "Click to Delete this item" class="glyphicon glyphicon-trash" aria-hidden="true"></span></a> 
+            <a href="<?php echo '/audit/del_item/' . $checklist_item['id']; ?>"><span title = "Click to Delete this item" class="glyphicon glyphicon-trash" aria-hidden="true"></span></a> 
             <a class ="show_signers" title="Show All Signers" href="#"><span title = "Click to show individual signers" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a>
           </td>
           <td><input type="checkbox" name="all_signed[]" value="<?php echo $checklist_item['id']; ?>"></td>

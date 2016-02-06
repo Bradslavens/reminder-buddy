@@ -12,6 +12,8 @@ class Audit extends CI_Controller {
 		{
 			redirect('welcome/index');
 		}
+
+		$this->load->library('session');
 	}
 
 	public function home($page = 'home'){
@@ -35,7 +37,7 @@ class Audit extends CI_Controller {
 
 			$this->load->model('transactions_model');
 
-			$_SESSION['transaction_id'] = $this->input->post('transaction');
+			$this->session->set_userdata(array('transaction_id'=>$this->input->post('transaction')));
 			// validate erros
 			// $this->form_validation->set_rules('first_name', 'First Name', 'required');
 			// duplicate duplicate the tips list
@@ -45,48 +47,154 @@ class Audit extends CI_Controller {
 			// delete item 
 			$this->load->helper('url');
 
-			if($this->uri->segment(4) === "del_item")
-			{
-				$this->transactions_model->delete_item('transaction_items', $this->uri->segment(5)  );
-			}
-
-			if($this->uri->segment(5) === "add_form")
-			{
-				$item_id = (int)$this->input->post('item_id');
-
-
-				if($item_id === 1)
-				{
-					$item_id = $this->transactions_model->add_item();
-
-				}
-
-				$this->transactions_model->add_transaction_item($item_id);
-
-			}
-
-			// update checklist
-			if($this->uri->segment(5) === "update_checklist_status")
-			{
-				// udate checklist signers
-				$this->transactions_model->update_checklist_status();
-			}
-			
 			// get available date types
 			$data['date_types'] = $this->transactions_model->get_item_by_id('date_types');
 			// get parties
 			$data['parties'] = $this->transactions_model->get_item_by_id('parties');
-			$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $_SESSION['transaction_id'], 1);// get checklist items   should be forms only
-			$this->load->view('proc/checklist', $data);
+			$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $this->session->userdata('transaction_id'), 1);// get checklist items   should be forms only
+			$this->load->view('audit/checklist', $data);
 			// add a compare button
 		}
 
+		$this->load->view('templates/footer');
+
+	}
+
+
+	public function del_item($id = NULL){
+		$this->load->model('audit_model');
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+
+		$this->load->model('transactions_model');
+
+		$this->transactions_model->delete_item('transaction_items', $id);
+
+
+		$this->load->view('templates/header');
+
+		// get transaction list
+		$t = $this->audit_model->get_transactions(1);
+
+		$data['t'] = $t;
+
+		$this->load->view('audit/home', $data);
+
+		if($this->input->post('transaction')){
+
+			$this->session->set_userdata(array('transaction_id'=>$this->input->post('transaction')));
+
+		}
+
+		// validate erros
+		// $this->form_validation->set_rules('first_name', 'First Name', 'required');
+		
+		// get available date types
+		$data['date_types'] = $this->transactions_model->get_item_by_id('date_types');
+		// get parties
+		$data['parties'] = $this->transactions_model->get_item_by_id('parties');
+		$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $this->session->userdata('transaction_id'), 1);// get checklist items   should be forms only
+		$this->load->view('audit/checklist', $data);
+		// add a compare button
+
+		$this->load->view('templates/footer');
+
+
+	}
+
+	public function add_form(){
+		$this->load->model('audit_model');
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+
+		$item_id = (int)$this->input->post('item_id');
+
+		$this->load->model('transactions_model');
+
+		if($item_id === 1)
+		{
+			$item_id = $this->transactions_model->add_item();
+
+		}
+
+		$this->transactions_model->add_transaction_item($item_id, 1); // 1 for audit
+
+		$this->load->view('templates/header');
+
+		// get transaction list
+		$t = $this->audit_model->get_transactions(1);
+
+		$data['t'] = $t;
+
+		$this->load->view('audit/home', $data);
+
+		if($this->input->post('transaction')){
+
+			$this->session->set_userdata(array('transaction_id'=>$this->input->post('transaction')));
+
+		}
+
+		// validate erros
+		// $this->form_validation->set_rules('first_name', 'First Name', 'required');
+		
+		// get available date types
+		$data['date_types'] = $this->transactions_model->get_item_by_id('date_types');
+		// get parties
+		$data['parties'] = $this->transactions_model->get_item_by_id('parties');
+		$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $this->session->userdata('transaction_id'), 1);// get checklist items   should be forms only
+		$this->load->view('audit/checklist', $data);
+		// add a compare button
+
+		$this->load->view('templates/footer');
+
+
+
+	}
+
+	public function update_checklist_status(){
+		$this->load->model('audit_model');
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		
+		$this->load->model('transactions_model');
+
+				// udate checklist signers
+		$this->transactions_model->update_checklist_status();
+		$this->load->view('templates/header');
+
+		// get transaction list
+		$t = $this->audit_model->get_transactions(1);
+
+		$data['t'] = $t;
+
+		$this->load->view('audit/home', $data);
+
+		if($this->input->post('transaction')){
+
+			$this->session->set_userdata(array('transaction_id'=>$this->input->post('transaction')));
+
+		}
+
+		// validate erros
+		// $this->form_validation->set_rules('first_name', 'First Name', 'required');
+		
+		// get available date types
+		$data['date_types'] = $this->transactions_model->get_item_by_id('date_types');
+		// get parties
+		$data['parties'] = $this->transactions_model->get_item_by_id('parties');
+		$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $this->session->userdata('transaction_id'), 1);// get checklist items   should be forms only
+		$this->load->view('audit/checklist', $data);
+		// add a compare button
 
 		$this->load->view('templates/footer');
 
 	}
 
 	public function audit_report(){
-		echo "here is yoru report";
+
+		$this->load->model('audit_model');
+
+		$this->audit_model->compare_audit($this->session->userdata('transaction_id'), 1, 0); // 1 for aud list
 	}
 }
+

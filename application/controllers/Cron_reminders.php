@@ -36,8 +36,8 @@ class Cron_reminders extends CI_Controller {
 						$this->email->from(PROCESSING_EMAIL, 'Brad Slavens');
 						$this->email->to(BROKER_EMAIL); 
 						$this->email->bcc(BROKER_COPY_EMAIL); 
-						$msgp  = $this->load->view('mail/reminders', $data, TRUE);
-						$msgp .= $this->load->view('mail/deb_sig',$data,TRUE);
+						// $msgp  = $this->load->view('mail/reminders', $data, TRUE);
+						// $msgp .= $this->load->view('mail/deb_sig',$data,TRUE);
 
 						$msg  = $this->load->view('mail/reminders_plain', $data, TRUE);
 						$msg .= $this->load->view('mail/deb_sig_plain',$data,TRUE);
@@ -57,7 +57,7 @@ class Cron_reminders extends CI_Controller {
 							$this->email->to(BROKER_COPY_EMAIL); 
 
 							$this->email->subject('email errors');
-							$this->email->set_alt_message($msgp);
+							$this->email->set_alt_message($msg);
 							$this->email->message($this->email->print_debugger()); 
 							// echo $msg;
 							$this->email->send();

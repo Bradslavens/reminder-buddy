@@ -38,4 +38,40 @@ class Audit_model extends CI_Model {
 		$q =$this->db->get('transactions');
 		return $q->result_array();
 	}
+
+	public function compare_audit($tid, $aud, $c_aud){
+
+		// first get the audit list
+		$this->db->select('transaction_item_parties.transaction_item_id as ti_id, transaction_item_parties.transaction_party_id as tp_id, transaction_item_parties.id as tip_id, transaction_item_parties.complete as tip_status, transaction_item_parties.audit as audit, transaction_items.id AS ti_id ');
+		$this->db->from('transaction_item_parties');
+		$this->db->join('transaction_items', 'transaction_items.id = transaction_item_parties.transaction_item_id ');
+		$this->db->join('transactions', 'transactions.id = transaction_items.transaction_id ');
+		$this->db->where('transactions.id', $tid);
+		$this->db->where('transaction_item_parties.audit', $aud); // audit list
+		$aud_list = $this->db->get();
+
+		// now compare to the original list 
+
+		foreach ($aud_list->result_array() as $al) {
+			# code...
+			$this->db->where('transaction_item_id', $al['ti_id']);
+			$this->db->where('transaction_party_id', $al['tp_id']);
+			$this->db->where('audit', $c_aud);
+			$or_list = $this->db->get('transaction_item_parties');
+
+			$orl = $or_list->result_array();
+			if(isset($orl[0])){
+
+				if($al['tip_status'] != $orl[0]['complete']){
+
+					// print list of discrepencies
+					$this->db->select('items.heading as heading, items.body as body, transaction_item_parties.complete as complete');
+					$this->db->join('')//
+
+					}
+
+			}
+		}
+
+	}
 }

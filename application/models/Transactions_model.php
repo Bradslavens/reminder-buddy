@@ -184,7 +184,7 @@ public function add_item()
 		return $new_item_id;
 	}	
 
-	public function add_transaction_item($item_id)
+	public function add_transaction_item($item_id , $audit = 0)
 	{
 		$this->item_id = $item_id;
 		// get default Q
@@ -203,15 +203,14 @@ public function add_item()
 		$this->db->insert('transaction_items', $d);
 		$this->transaction_item_id = $this->db->insert_id();
 
-		$this->add_transaction_item_parties();
+		$this->add_transaction_item_parties($audit);
 	}
 
-	private function add_transaction_item_parties()   /// not working!!!!!
+	private function add_transaction_item_parties($audit = 0)   /// not working!!!!!
 	{
 		if($this->input->post('parties'))
 		{
 			$item_parties = $this->input->post('parties');
-			echo " item parties exists";
 		}else
 		// get item parties 
 		{
@@ -232,20 +231,20 @@ public function add_item()
 			}
 			else
 			{
-				echo "<br /> not array";
 				$new_party = $this->reset_item_party($party);
 			}
 
-			$this->db->where('transaction_id', $_SESSION['transaction_id']);
+			$this->db->where('transaction_id', $this->session->userdata('transaction_id'));
 			$this->db->where('party', $new_party);
 			$q4 = $this->db->get('transaction_parties'); // get transaction party that matches party type
 			// echo "transaction parties";
+
 			if($q4->num_rows() > 0)
 			{
 				// now add each transaction party and transaction item to transaction item party
 				foreach ($q4->result_array() as $transaction_parties) 
 				{
-					$this->add_tip($this->transaction_item_id, $transaction_parties['id']);
+					$this->add_tip($this->transaction_item_id, $transaction_parties['id'], $audit);
 				}
 
 			}
@@ -309,20 +308,18 @@ public function add_item()
 	}
 
 	// add transaction item party
-	private function add_tip($transaction_item_id, $transaction_party_id)
+	private function add_tip($transaction_item_id, $transaction_party_id, $audit = 0)
 	{
 
 		$data5 = array
 		(
 			'transaction_item_id' => $transaction_item_id,
-			'transaction_party_id' => $transaction_party_id
+			'transaction_party_id' => $transaction_party_id,
+			'audit' => $audit
 		);
+
 		$this->db->insert('transaction_item_parties', $data5);	
 	}
-	// public function get_transaction_items($type)  // 2 is form 1 is reminder
-	// {
-	// 	//
-	// }
 
 	public function get_transaction_items2($transaction_id, $item_type){
 

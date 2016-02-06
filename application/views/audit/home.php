@@ -11,8 +11,8 @@
 				</select>
 			  <button type="submit" class="btn btn-default">Submit</button>
 			</form>
-
-			<button>Run Comparison Report</button>
+			<a href="/audit/audit_report"><button>Run Comparison Report</button></a>
+			
 		</div>
 	</div>
 </div>
