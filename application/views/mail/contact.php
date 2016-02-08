@@ -1,19 +1,3 @@
-<style type="text/css">
-
-	#outer {
-		background: #b0ada5;
-		padding: 2em;
-	}
-
-	#inner {
-		background-color: white;
-		color: #2b281d;
-		padding: 2em;
-		margin: auto 10px;
-	}
-
-</style>
-
 <div id = "outer" >
 	<div id="inner">
 		<p>Hello <?php echo $first_name; ?>,</p> 		

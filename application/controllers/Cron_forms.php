@@ -18,82 +18,76 @@ class Cron_forms extends CI_Controller {
 
 			foreach ($transactions as $transaction) 
 			{// for each transaction get transaction contacts join contacts
-			   $t_contacts = $this->transactions_model->get_transaction_contacts($transaction['id']);
-			   // set transaction info for subject
+				   // set transaction info for subject
 			   $data['transaction_name'] = $transaction['name'];
 
-			   foreach ($t_contacts as $t_contact) 
-			   {
-			   		// set buyer tc if no tc set it to agent
-			   		if($t_contact['party'] == 6 )
-			   		{
-			   			$buyer_tc = $t_contact['email'];
-			   		}
-			   		elseif($t_contact['party']== 3)
-			   		{
-			   			// see if there is a buyers's agent
-			   			if(empty($this->transactions_model->get_item_by_id('transaction_parties', array('party' => 6)))){
-			   					$buyer_tc = $t_contact['party']; 
-			   			}
-			   		}
+			   $form_list = array();
+				// get past due forms 
+				$forms = $this->transactions_model->get_past_due_forms($transaction['id']);
+				foreach ($forms as $form) {
+					# code...
+					// get partys who havent signed
+					$parties = $this->transactions_model->get_unsigned_parties($form['id']);
+					if(!empty($parties)){
 
-			   		// set buyer tc if no tc set it to agent
-			   		if($t_contact['party'] == 7 )
-			   		{
-			   			$seller_tc = $t_contact['email'];
-			   		}
-			   		elseif($t_contact['party'] == 4)
-			   		{
-			   			// see if there is a buyers's agent
-			   			if(empty($this->transactions_model->get_item_by_id('transaction_parties', array('party' => 7)))){
-			   					$seller_tc = $t_contact['party']; 
-			   			}
-			   		}
+						$form['parties'] = $parties;
+						$form_list[] = $form;
 
-			   		// set seller tc if no tc set it to agent
-			   		if($t_contact['party'] == 5 )
-			   		{
-			   			$escrow = $t_contact['email'];
-			   		}
+					}
 				}
 
-				// get headings by side
-				// get sides and then for each side make a category of forms due for that side
-				// get available sides
-				$sides = $this->transactions_model->get_item_by_id('sides');
-				$x = 0;
-				foreach ($sides as $s) {
-					# code...
-					// get forms that belong on each side using queue and signers
-					// select transaction items
-					// which are incomplete
-					$tis = $this->transactions_model->get_transaction_items(2, $transaction['id']);
-					foreach ($tis as $ti) {
+				$data['form_list'] = $form_list;
 
-						if($ti['queue_id'] == $s['id'] ){
-						// 		// add to list
-								$sides[$x]['item'][] = $ti;
-						// 		// see if items are signed by everyone else
-						// 		// check if all signed except party
+				$t_contacts = $this->transactions_model->get_transaction_contacts($transaction['id']);
 
-						}elseif(empty($this->transactions_model->get_items_not_complete($ti['id'], $s['id']))){
+				// get our agent our tc and there tc or agent and send each one a copy
 
-								$sides[$x]['item'][] = $ti;
+				$send_to = array();
+
+				if($transaction['side'] == 1){ // 1 is buyers side
+					// set a send to to buyer's agent
+					$send_tos[] = $this->transactions_model->get_party($transaction['id'], 1);
+					// find out if there is a seller's tc
+					$seller_side = $this->transactions_model->get_party($transaction['id'], 7);
+						// if yes send to seller's tc
+					if(!empty($seller_side)){
+						$send_tos[] = $seller_side;
+					}else{
+						// else send to seller's agent
+						$sa = $this->transactions_model->get_party($transaction['id'],4);
+						if(!empty($sa)){
+							$send_tos[] = $sa;
 						}
 					}
-
-					$x++;
 				}
 
+				if($transaction['side'] == 4){  // 4 is sellers side
+					// set a send to to seller's agent
+					$send_tos[] = $this->transactions_model->get_party($transaction['id'], 4);
+					// find out if there is a buyer's tc
+					$buyer_side = $this->transactions_model->get_party($transaction['id'], 6);
+						// if yes send to buyer's tc
+					if(!empty($buyer_side)){
+						$send_tos[] = $buyer_side;
+					}else{
+						// else send to seller's agent
+						$ba = $this->transactions_model->get_party($transaction['id'],3);
+						if(!empty($ba)){
+							$send_tos[] = $ba;
+						}
+					}
+				}
+			   foreach ($send_tos as $send_to) 
+			   {
+			   		$data['contact'] = $send_to[0];
 					// mail debbie instructions
-					$data['sides'] = $sides;
 					$data['transaction'] = $transaction;
 
 					$this->load->library('email');
 					$this->email->set_mailtype("html");
 
 					$this->email->from(TC_EMAIL, TC_NAME);
-					$this->email->to(TC_EMAIL); 
+					$this->email->to($send_to[0]['email']); 
 					$this->email->bcc(BROKER_COPY_EMAIL); 
 					$msg  = $this->load->view('mail/forms', $data, TRUE);
 					$msg .= $this->load->view('mail/deb_sig',$data,TRUE);
@@ -101,10 +95,12 @@ class Cron_forms extends CI_Controller {
 					$this->email->subject($data['transaction_name']);
 					$this->email->message($msg); 
 					$this->email->set_alt_message('error');
+					// var_dump($send_to);
 					// echo $msg;
 					$this->email->send();
+					// exit();
+				}
 
-					// mark form mail send complete
 			}
 		}
 		else

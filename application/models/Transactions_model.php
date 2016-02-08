@@ -64,6 +64,19 @@ class Transactions_model extends CI_Model {
 		return $q->result_array();
 	}
 
+
+	public function get_transaction_dates2($transaction_id = FALSE)
+	{
+		$this->db->select('calendar_date, date, id');
+		$this->db->from('transaction_dates');
+		// $this->db->join('date_types','transaction_dates.date=date_types.id');
+		$this->db->where('transaction',$transaction_id);
+
+		$q = $this->db->get();
+
+		return $q->result_array();
+	}
+
 	public function add_party()
 	{
 		// // check if contact exists
@@ -772,33 +785,120 @@ public function add_item()
 		return $q->result_array();
 	}
 
-	public function get_past_due_reminders($contact_id, $transaction_id){
+	private function get_calendar_date($transaction_id, $date_type){
 
 		// get calendar date for transaction to see if it's due
 
 		$this->db->select('calendar_date');
 		$this->db->where('transaction_dates.transaction',$transaction_id);
-		$this->db->where('transaction_dates.date', 1);
+		$this->db->where('transaction_dates.date', $date_type);
 		$sql = $this->db->get_compiled_select('transaction_dates');
 		$sql1 = '('.$sql.')';
 
-		$this->db->select('transaction_item_parties.id AS tip_id, items.heading AS heading, items.body AS body, items.days AS days, items.date_type AS date_type');
+		return $sql1;
+	}
+
+	public function get_past_due_reminders($contact_id, $transaction_id){
+
+		$list = array();
+
+		// get all transaction dates
+		$dates = $this->get_transaction_dates2($transaction_id);
+		foreach ($dates as $date) {
+			// get calendar date
+			$sql1 = $this->get_calendar_date($transaction_id);
+
+			$this->db->select('transaction_item_parties.id AS tip_id, items.heading AS heading, items.body AS body, items.days AS days, items.date_type AS date_type');
+			$this->db->from('transaction_item_parties');
+			$this->db->join('transaction_items', 'transaction_item_parties.transaction_item_id = transaction_items.id' );
+			$this->db->join('items', 'transaction_items.item_id = items.id ' );
+			$this->db->join('transactions', 'transaction_items.transaction_id = transactions.id' );
+			$this->db->where('transaction_item_parties.complete', 0); // incomplete
+			$this->db->where('transaction_item_parties.audit', 0); // not audit
+			$this->db->where('items.item_type', 1); // select reminders only
+			$this->db->where('transaction_item_parties.transaction_party_id', $contact_id);
+			$this->db->where($sql1. ' < date_sub(curdate(), interval days day)', NULL
+				);
+
+			$q = $this->db->get();
+
+			foreach ($is as $i) {
+				# code...
+				$list[] = $i;
+			}
+		}
+
+		return $list;
+	}
+
+	// public function get_past_due_forms($transaction_id){
+
+	// 	$list = array();
+
+	// 	// get all transaction dates
+	// 	$dates = $this->get_transaction_dates2($transaction_id);
+	// 	foreach ($dates as $date) {
+	// 		# code...
+	// 		// get calendar date
+	// 		$sql1 = $this->get_calendar_date($transaction_id, $date['date_type']);
+
+	// 		// get the forms
+	// 		$this->db->select('transaction_items.id as tid, items.id as id, items.heading as heading, items.body as body ');
+			
+	// 		$this->db->from('transaction_item_parties');
+			
+	// 		$this->db->join('transaction_items', 'transaction_items.id = transaction_item_parties.transaction_item_id ');
+	// 		$this->db->join('items', 'items.id = transaction_items.item_id');
+
+	// 		$this->db->where('transaction_items.transaction_id', $transaction_id);
+	// 		$this->db->where('transaction_item_parties.complete', 0);
+	// 		$this->db->where('items.item_type', 2);
+	// 		$this->db->where('transaction_item_parties.complete', 0);
+	// 		$this->db->where($sql1. ' < date_sub(curdate(), interval days day)', NULL
+	// 			);
+	// 		// $this->db->group_by('tid');
+	// 		$this->db->order_by('id', 'ASC');
+
+	// 		$q = $this->db->get();
+
+	// 		$list[] = $q->result_array();
+	// 		echo $date['date_type'];
+	// 		var_dump($list);
+	// 	}
+
+
+	public function get_past_due_forms($transaction_id){
+
+		// get trasactin items that match date
+		$this->db->select('transaction_items.id as id, items.heading as heading, items.body as body');
+		$this->db->from('transaction_dates');
+		$this->db->join('transactions', 'transaction_dates.transaction = transactions.id');
+		$this->db->join('transaction_items', 'transaction_items.transaction_id = transactions.id');
+		$this->db->join('items', 'items.id = transaction_items.item_id');
+		$this->db->where('transactions.id', $transaction_id);
+		$this->db->where('items.item_type', 2);
+		$this->db->where('curdate() > date_add(transaction_dates.calendar_date, interval items.days DAY)', NULL);
+		$this->db->group_by('transaction_items.id');
+		$q = $this->db->get();
+		$items= $q->result_array();
+
+		// var_dump($items);
+		return $items;
+	}
+
+	public function get_unsigned_parties($tid){
+		// get unsigned parties by transaction item id tid
+		$this->db->select('contacts.first_name as first_name, contacts.last_name AS last_name ');
 		$this->db->from('transaction_item_parties');
-		$this->db->join('transaction_items', 'transaction_item_parties.transaction_item_id = transaction_items.id' );
-		$this->db->join('items', 'transaction_items.item_id = items.id ' );
-		$this->db->join('transactions', 'transaction_items.transaction_id = transactions.id' );
-		$this->db->where('transaction_item_parties.complete', 0); // incomplete
-		$this->db->where('transaction_item_parties.audit', 0); // not audit
-		$this->db->where('items.item_type', 1); // select reminders only
-		$this->db->where('transaction_item_parties.transaction_party_id', $contact_id);
-		$this->db->where($sql1. ' < date_sub(curdate(), interval days day)', NULL
-			);
+		$this->db->join('transaction_parties', 'transaction_parties.id = transaction_item_parties.transaction_party_id');
+		$this->db->join('contacts', 'contacts.id = transaction_parties.contact_id');
+		$this->db->join('transaction_items', 'transaction_items.id = transaction_item_parties.transaction_item_id 
+');
+		$this->db->where('transaction_item_parties.complete', 0); //incomplete only
+		$this->db->where('transaction_items.id', $tid);
 
 		$q = $this->db->get();
-		// $q = $this->db->get_compiled_select();
-		// echo $q . "<br />";
-		// exit();
-		// var_dump($q->result_array());
+
 		return $q->result_array();
 	}
 
@@ -811,5 +911,18 @@ public function add_item()
 			$this->db->where('id', $tip['tip_id']);
 			$this->db->update('transaction_item_parties', $ra);
 		}
+	}
+
+	public function get_party($transaction_id, $party){
+
+		$this->db->select('contacts.first_name as first_name, contacts.last_name as last_name, contacts.email as email');
+		$this->db->from('transaction_parties');
+		$this->db->join('contacts', 'contacts.id = transaction_parties.contact_id');
+		$this->db->where('transaction_parties.transaction_id', $transaction_id);
+		$this->db->where('transaction_parties.party', $party);
+		$q = $this->db->get();
+
+		return $q->result_array();
+
 	}
 }
