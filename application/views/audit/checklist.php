@@ -85,6 +85,7 @@
       <?php echo form_open('/audit/update_checklist_status', $form_attributes); ?>
       <!-- Table row and data -->
       <?php foreach ($checklist_items as $checklist_item): ?>
+      
       <div>
         <tr>
           <td><?php if($checklist_item['all_signed'] == 0){ echo "Incomplete"; }else{echo "Complete"; } ?><br />

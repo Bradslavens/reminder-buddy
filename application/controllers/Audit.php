@@ -40,8 +40,8 @@ class Audit extends CI_Controller {
 			$this->session->set_userdata(array('transaction_id'=>$this->input->post('transaction')));
 
 			$aud_number = $this->audit_model->get_new_audit($this->session->userdata('transaction_id'));
-
-			$this->audit_model->create_audit_list($this->input->post('transaction'), $aud_number); // enter transaction id and audit number
+			$this->session->set_userdata(array('aud_number' => $aud_number));
+			$this->audit_model->create_audit_list($this->input->post('transaction'), $this->session->userdata('aud_number')); // enter transaction id and audit number
 			// present the checklist
 
 			// delete item 
@@ -51,7 +51,8 @@ class Audit extends CI_Controller {
 			$data['date_types'] = $this->transactions_model->get_item_by_id('date_types');
 			// get parties
 			$data['parties'] = $this->transactions_model->get_item_by_id('parties');
-			$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $this->session->userdata('transaction_id'), $aud_number);// get checklist items   should be forms only
+			$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $this->session->userdata('transaction_id'), $this->session->userdata('aud_number'));// get checklist items   should be forms only
+		
 			$this->load->view('audit/checklist', $data);
 			// add a compare button
 		}
@@ -67,8 +68,9 @@ class Audit extends CI_Controller {
 		$this->load->library('form_validation');
 
 		$this->load->model('audit_model');
+		$this->load->model('transactions_model');
 
-		$this->audit_model->delete_item('transaction_items', $id);
+		$this->audit_model->delete_aud_item($id, $this->session->userdata('aud_number'));
 
 
 		$this->load->view('templates/header');
@@ -93,7 +95,7 @@ class Audit extends CI_Controller {
 		$data['date_types'] = $this->transactions_model->get_item_by_id('date_types');
 		// get parties
 		$data['parties'] = $this->transactions_model->get_item_by_id('parties');
-		$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $this->session->userdata('transaction_id'), 1);// get checklist items   should be forms only
+		$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $this->session->userdata('transaction_id'), $this->session->userdata('aud_number'));// get checklist items   should be forms only
 		$this->load->view('audit/checklist', $data);
 		// add a compare button
 
@@ -114,11 +116,11 @@ class Audit extends CI_Controller {
 
 		if($item_id === 1)
 		{
-			$item_id = $this->audit_model->add_item();
+			$item_id = $this->transactions_model->add_item();
 
 		}
 
-		$this->audit_model->add_transaction_item($item_id, 1); // 1 for audit
+		$this->audit_model->add_transaction_item($item_id, $this->session->userdata('aud_number')); // 1 for audit
 
 		$this->load->view('templates/header');
 
@@ -142,7 +144,7 @@ class Audit extends CI_Controller {
 		$data['date_types'] = $this->transactions_model->get_item_by_id('date_types');
 		// get parties
 		$data['parties'] = $this->transactions_model->get_item_by_id('parties');
-		$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $this->session->userdata('transaction_id'), 1);// get checklist items   should be forms only
+		$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $this->session->userdata('transaction_id'), $this->session->userdata('aud_number'));// get checklist items   should be forms only
 		$this->load->view('audit/checklist', $data);
 		// add a compare button
 
@@ -184,7 +186,7 @@ class Audit extends CI_Controller {
 		$data['date_types'] = $this->transactions_model->get_item_by_id('date_types');
 		// get parties
 		$data['parties'] = $this->transactions_model->get_item_by_id('parties');
-		$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $this->session->userdata('transaction_id'), 1);// get checklist items   should be forms only
+		$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $this->session->userdata('transaction_id'), $this->session->userdata('aud_number'));// get checklist items   should be forms only 
 		$this->load->view('audit/checklist', $data);
 		// add a compare button
 

@@ -347,11 +347,13 @@ public function add_item()
 	{
 		// first get all the items
 		$this->db->select('transaction_items.id AS id, items.queue AS queue_id, queues.name AS queue, items.heading AS heading, items.body AS body, notes');
+		$this->db->from('transaction_item_parties');
+		$this->db->join('transaction_items', 'transaction_item_parties.transaction_item_id = transaction_items.id');
 		$this->db->join('items', 'items.id = transaction_items.item_id');
 		$this->db->join('queues', 'queues.id = transaction_items.queue');
+		$this->db->where('transaction_item_parties.audit', $aud);
 		$this->db->where('transaction_id', $transaction_id);
 		$this->db->where('type', $type);
-		$this->db->from('transaction_items');
 		$this->db->order_by('heading', 'asc' );
 		$q = $this->db->get();
 

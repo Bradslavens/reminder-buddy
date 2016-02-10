@@ -7,6 +7,7 @@ class Audit_model extends CI_Model {
 	}
 
 	private $new_audit_number;
+	private $item_id;
 
 	public function create_audit_list($transaction_id, $aud_num = 0){
 		// get transaction item parties
@@ -44,14 +45,13 @@ class Audit_model extends CI_Model {
 		$discrepencies['tips'] = array();
 		$discrepencies['forms'] = array();
 		// get current audit number 
-		$current_audit_number = $this->get_current_audit_number($tid);
 		// first get the audit list compare audit to original
 		$this->db->select('transaction_item_parties.transaction_item_id as ti_id, transaction_item_parties.transaction_party_id as tp_id, transaction_item_parties.id as tip_id, transaction_item_parties.complete as complete, transaction_item_parties.audit as audit, transaction_items.id AS ti_id ');
 		$this->db->from('transaction_item_parties');
 		$this->db->join('transaction_items', 'transaction_items.id = transaction_item_parties.transaction_item_id ');
 		$this->db->join('transactions', 'transactions.id = transaction_items.transaction_id ');
 		$this->db->where('transactions.id', $tid);
-		$this->db->where('transaction_item_parties.audit', $current_audit_number); // audit list
+		$this->db->where('transaction_item_parties.audit', $this->session->userdata('aud_number')); // audit list
 
 		$q1 = $this->db->get();
 
@@ -116,7 +116,7 @@ items.body as body, contacts.first_name as first_name, contacts.last_name as las
 						$this->db->select('transaction_items.id as tid');
 						$this->db->from('transaction_item_parties');
 						$this->db->join('transaction_items', 'transaction_item_parties.transaction_item_id = transaction_items.id');
-						$this->db->where('audit', $current_audit_number); // aud // change to audit number variable
+						$this->db->where('audit', $this->session->userdata('aud_number')); // aud // change to audit number variable
 						$this->db->where('transaction_items.id', $original_item['tid']); // original tid
 
 						$q3=$this->db->get();
@@ -154,16 +154,24 @@ items.body as body, contacts.first_name as first_name, contacts.last_name as las
 
     	// update audit number
     	$this->new_audit_number = $old_audit_number +1;
+
 		$this->db->where('id', $transaction_id);
 		$this->db->update('transactions', array('aud_number' => $this->new_audit_number)); 
 
     	return $this->new_audit_number;
 	}
 
-	public function delete_item($table, $id){
+	public function delete_aud_item($transaction_item_id, $aud_number){
+		// get tips for item where audit
+		$this->db->where('transaction_item_id', $transaction_item_id);
+		$this->db->where('audit', $aud_number);
+		$q =	$this->db->get('transaction_item_parties');
 
-		$this->db->delete($table, array('id'=> $id));
-
+		// delete tips
+		foreach ($q->result_array() as $tip) {
+			$this->db->where('id',$tip['id']);
+			$this->db->delete('transaction_item_parties');
+		}
 	}
 
 	public function add_transaction_item($item_id , $audit = 0)
@@ -220,7 +228,6 @@ items.body as body, contacts.first_name as first_name, contacts.last_name as las
 		{
 			foreach ($this->input->post('transaction_item_parties_signed') as $tips) 
 			{
-				echo "tips" . $tips;
 				$this->db->where('id', $tips);
 				$this->db->update('transaction_item_parties', array('complete' => 1));
 			}
