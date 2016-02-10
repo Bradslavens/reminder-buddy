@@ -38,10 +38,10 @@ class Audit extends CI_Controller {
 			$this->load->model('transactions_model');
 
 			$this->session->set_userdata(array('transaction_id'=>$this->input->post('transaction')));
-			// validate erros
-			// $this->form_validation->set_rules('first_name', 'First Name', 'required');
-			// duplicate duplicate the tips list
-			$this->audit_model->create_audit_list($this->input->post('transaction'), 1); // enter transaction id and audit number
+
+			$aud_number = $this->audit_model->get_new_audit($this->session->userdata('transaction_id'));
+
+			$this->audit_model->create_audit_list($this->input->post('transaction'), $aud_number); // enter transaction id and audit number
 			// present the checklist
 
 			// delete item 
@@ -51,7 +51,7 @@ class Audit extends CI_Controller {
 			$data['date_types'] = $this->transactions_model->get_item_by_id('date_types');
 			// get parties
 			$data['parties'] = $this->transactions_model->get_item_by_id('parties');
-			$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $this->session->userdata('transaction_id'), 1);// get checklist items   should be forms only
+			$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $this->session->userdata('transaction_id'), $aud_number);// get checklist items   should be forms only
 			$this->load->view('audit/checklist', $data);
 			// add a compare button
 		}
@@ -66,9 +66,9 @@ class Audit extends CI_Controller {
 		$this->load->helper('form');
 		$this->load->library('form_validation');
 
-		$this->load->model('transactions_model');
+		$this->load->model('audit_model');
 
-		$this->transactions_model->delete_item('transaction_items', $id);
+		$this->audit_model->delete_item('transaction_items', $id);
 
 
 		$this->load->view('templates/header');
@@ -109,15 +109,16 @@ class Audit extends CI_Controller {
 
 		$item_id = (int)$this->input->post('item_id');
 
+		$this->load->model('audit_model');
 		$this->load->model('transactions_model');
 
 		if($item_id === 1)
 		{
-			$item_id = $this->transactions_model->add_item();
+			$item_id = $this->audit_model->add_item();
 
 		}
 
-		$this->transactions_model->add_transaction_item($item_id, 1); // 1 for audit
+		$this->audit_model->add_transaction_item($item_id, 1); // 1 for audit
 
 		$this->load->view('templates/header');
 
@@ -152,6 +153,7 @@ class Audit extends CI_Controller {
 	}
 
 	public function update_checklist_status(){
+		echo "here- update checklist status incontroller";
 		$this->load->model('audit_model');
 		$this->load->helper('form');
 		$this->load->library('form_validation');
@@ -159,7 +161,7 @@ class Audit extends CI_Controller {
 		$this->load->model('transactions_model');
 
 				// udate checklist signers
-		$this->transactions_model->update_checklist_status();
+		$this->audit_model->update_checklist_status();
 		$this->load->view('templates/header');
 
 		// get transaction list
@@ -191,10 +193,31 @@ class Audit extends CI_Controller {
 	}
 
 	public function audit_report(){
-
 		$this->load->model('audit_model');
 
-		$this->audit_model->compare_audit($this->session->userdata('transaction_id'), 1, 0); // 1 for aud list
+		$data['audit_list'] = $this->audit_model->compare_audit($this->session->userdata('transaction_id')); 
+		
+		$this->load->view('templates/header');
+
+		$this->load->view('audit/disc_list', $data);
+
+		$this->load->view('templates/footer');
 	}
+
+
+	// add transaction item party
+	private function add_tip($transaction_item_id, $transaction_party_id, $audit = 0)
+	{
+
+		$data5 = array
+		(
+			'transaction_item_id' => $transaction_item_id,
+			'transaction_party_id' => $transaction_party_id,
+			'audit' => $audit
+		);
+
+		$this->db->insert('transaction_item_parties', $data5);	
+	}
+
 }
 

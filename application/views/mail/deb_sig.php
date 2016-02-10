@@ -1,4 +1,4 @@
-Thank You <br>
+Thank You, <br>
 
 Debbie Slavens<br>
 Transaction Coordinator<br>

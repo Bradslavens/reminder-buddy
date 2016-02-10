@@ -219,7 +219,7 @@ public function add_item()
 		$this->add_transaction_item_parties($audit);
 	}
 
-	private function add_transaction_item_parties($audit = 0)   /// not working!!!!!
+	private function add_transaction_item_parties($audit = 0)   
 	{
 		if($this->input->post('parties'))
 		{
@@ -529,6 +529,7 @@ public function add_item()
 		{
 			# code...set transactio item parties complete to 0 where transactino_item_id
 			$this->db->where('transaction_item_id', $value['id']);
+			$this->db->where('audit', 0); // original not audit
 			$data_reset = array('complete' => 0);
 			$this->db->update('transaction_item_parties', $data_reset);
 		}

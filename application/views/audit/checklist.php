@@ -82,7 +82,7 @@
       <!-- add new form  -->
       <?php echo validation_errors(); ?>
       <?php $form_attributes = array('id'=>'update_checklist_status'); ?>
-      <?php echo form_open('audit/del_item/'.$_SESSION['transaction_id'].'/update_checklist_status', $form_attributes); ?>
+      <?php echo form_open('/audit/update_checklist_status', $form_attributes); ?>
       <!-- Table row and data -->
       <?php foreach ($checklist_items as $checklist_item): ?>
       <div>
@@ -116,6 +116,7 @@
             
       </div>
       <?php endforeach; ?>
+    </form>
     </table>
     </div>
 </div>
