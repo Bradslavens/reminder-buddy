@@ -52,7 +52,7 @@ class Audit extends CI_Controller {
 			// get parties
 			$data['parties'] = $this->transactions_model->get_item_by_id('parties');
 			$data['checklist_items'] = $this->transactions_model->get_transaction_items(2, $this->session->userdata('transaction_id'), $this->session->userdata('aud_number'));// get checklist items   should be forms only
-			var_dump($data['checklist_items']);
+	
 			$this->load->view('audit/checklist', $data);
 			// add a compare button
 		}
