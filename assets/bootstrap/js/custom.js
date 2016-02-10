@@ -139,6 +139,19 @@
 	  		}
 	  	});
 
+
+	  	// $(".del_btn").click(function(evt)
+	  	// {
+
+  		// 	evt.preventDefault();
+
+	  	// 	var c = confirm("Ok to delete this item?"); // confimr ok to delete
+	  	// 	if(c == true){
+	  	// 		$(this).siblings("a.del_link").trigger("click");
+	  	// 		// $(this).css('background-color','red');
+	  	// 	}
+	  	// });
+
 	  	// toggle "edit" form on table lists
 
 		$('.edit').click(function(e){

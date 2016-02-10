@@ -354,6 +354,7 @@ public function add_item()
 		$this->db->where('transaction_item_parties.audit', $aud);
 		$this->db->where('transaction_id', $transaction_id);
 		$this->db->where('type', $type);
+		$this->db->group_by('id');
 		$this->db->order_by('heading', 'asc' );
 		$q = $this->db->get();
 
