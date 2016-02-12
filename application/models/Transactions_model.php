@@ -874,19 +874,20 @@ public function add_item()
 	public function get_past_due_forms($transaction_id){
 
 		// get trasactin items that match date
-		$this->db->select('transaction_items.id as id, items.heading as heading, items.body as body');
+		$this->db->select('transaction_items.id as id, items.heading as heading, items.body as body , 
+transaction_dates.date as t_date, items.date_type as idt, transaction_dates.calendar_date as c_date, items.days as days');
 		$this->db->from('transaction_dates');
 		$this->db->join('transactions', 'transaction_dates.transaction = transactions.id');
 		$this->db->join('transaction_items', 'transaction_items.transaction_id = transactions.id');
 		$this->db->join('items', 'items.id = transaction_items.item_id');
 		$this->db->where('transactions.id', $transaction_id);
 		$this->db->where('items.item_type', 2);
+		$where = "transaction_dates.date = items.date_type";
+		$this->db->where($where);
 		$this->db->where('curdate() > date_add(transaction_dates.calendar_date, interval items.days DAY)', NULL);
-		$this->db->group_by('transaction_items.id');
 		$q = $this->db->get();
 		$items= $q->result_array();
-
-		// var_dump($items);
+		
 		return $items;
 	}
 
@@ -899,6 +900,7 @@ public function add_item()
 		$this->db->join('transaction_items', 'transaction_items.id = transaction_item_parties.transaction_item_id 
 ');
 		$this->db->where('transaction_item_parties.complete', 0); //incomplete only
+		$this->db->where('transaction_item_parties.audit', 0);
 		$this->db->where('transaction_items.id', $tid);
 
 		$q = $this->db->get();
