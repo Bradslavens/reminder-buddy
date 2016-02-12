@@ -809,8 +809,10 @@ public function add_item()
 		// get all transaction dates
 		$dates = $this->get_transaction_dates2($transaction_id);
 		foreach ($dates as $date) {
+			echo "date";
+			var_dump($date);
 			// get calendar date
-			$sql1 = $this->get_calendar_date($transaction_id);
+			$sql1 = $this->get_calendar_date($transaction_id,$date['date']);
 
 			$this->db->select('transaction_item_parties.id AS tip_id, items.heading AS heading, items.body AS body, items.days AS days, items.date_type AS date_type');
 			$this->db->from('transaction_item_parties');
@@ -821,17 +823,17 @@ public function add_item()
 			$this->db->where('transaction_item_parties.audit', 0); // not audit
 			$this->db->where('items.item_type', 1); // select reminders only
 			$this->db->where('transaction_item_parties.transaction_party_id', $contact_id);
-			$this->db->where($sql1. ' < date_sub(curdate(), interval days day)', NULL
+			$this->db->where($sql1. ' < date_sub(curdate(), interval items.days day)', NULL
 				);
 
 			$q = $this->db->get();
 
-			foreach ($is as $i) {
+			foreach ($q->result_array() as $i) {
 				# code...
 				$list[] = $i;
 			}
 		}
-
+		
 		return $list;
 	}
 
