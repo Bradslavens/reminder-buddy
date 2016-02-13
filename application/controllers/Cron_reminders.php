@@ -24,7 +24,7 @@ class Cron_reminders extends CI_Controller {
 				foreach ($cs as $c) {
 					# code...
 
-					$data['items'] = $this->transactions_model->get_past_due_reminders($c['id'], $t['id']); // 
+					$data['items'] = $this->transactions_model->get_past_due_reminders($c['id']); // 
 					
 					if($data['items']){
 
@@ -65,7 +65,7 @@ class Cron_reminders extends CI_Controller {
 
 						// mark form mail send complete
 						$this->transactions_model->set_items_to_complete($data['items']);
-
+// 
 
 					}
 

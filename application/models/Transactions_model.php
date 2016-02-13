@@ -802,39 +802,24 @@ public function add_item()
 		return $sql1;
 	}
 
-	public function get_past_due_reminders($contact_id, $transaction_id){
+	public function get_past_due_reminders($contact_id){
 
-		$list = array();
-
-		// get all transaction dates
-		$dates = $this->get_transaction_dates2($transaction_id);
-		foreach ($dates as $date) {
-			echo "date";
-			var_dump($date);
-			// get calendar date
-			$sql1 = $this->get_calendar_date($transaction_id,$date['date']);
-
-			$this->db->select('transaction_item_parties.id AS tip_id, items.heading AS heading, items.body AS body, items.days AS days, items.date_type AS date_type');
-			$this->db->from('transaction_item_parties');
-			$this->db->join('transaction_items', 'transaction_item_parties.transaction_item_id = transaction_items.id' );
-			$this->db->join('items', 'transaction_items.item_id = items.id ' );
-			$this->db->join('transactions', 'transaction_items.transaction_id = transactions.id' );
-			$this->db->where('transaction_item_parties.complete', 0); // incomplete
-			$this->db->where('transaction_item_parties.audit', 0); // not audit
-			$this->db->where('items.item_type', 1); // select reminders only
-			$this->db->where('transaction_item_parties.transaction_party_id', $contact_id);
-			$this->db->where($sql1. ' < date_sub(curdate(), interval items.days day)', NULL
-				);
-
-			$q = $this->db->get();
-
-			foreach ($q->result_array() as $i) {
-				# code...
-				$list[] = $i;
-			}
-		}
+		$this->db->select('items.heading as heading, items.body as body, transaction_item_parties.id as id');
+		$this->db->from('transaction_item_parties');
+		$this->db->join('transaction_items', 'transaction_item_parties.transaction_item_id = transaction_items.id' );
+		$this->db->join('items', 'transaction_items.item_id = items.id ' );
+		$this->db->join('transaction_dates', 'transaction_dates.transaction = transaction_items.transaction_id' );
+		$this->db->where('transaction_item_parties.complete', 0); // incomplete
+		$this->db->where('transaction_item_parties.audit', 0); // not audit
+		$this->db->where('items.item_type', 1); // select reminders only
+		$this->db->where('transaction_item_parties.transaction_party_id', $contact_id);
+		$where = "transaction_dates.date = items.date_type";
+		$this->db->where($where);
+		$this->db->where('curdate() > date_add(transaction_dates.calendar_date, interval items.days DAY)', NULL
+			);
 		
-		return $list;
+		$q=$this->db->get();
+		return $q->result_array();
 	}
 
 	// public function get_past_due_forms($transaction_id){
@@ -912,12 +897,13 @@ transaction_dates.date as t_date, items.date_type as idt, transaction_dates.cale
 
 	public function set_items_to_complete($data){
 		//
-		
 		foreach ($data as $tip) {
 			# code...
+
 			$ra = array('complete' => 1);
-			$this->db->where('id', $tip['tip_id']);
+			$this->db->where('id', $tip['id']);
 			$this->db->update('transaction_item_parties', $ra);
+				
 		}
 	}
 
