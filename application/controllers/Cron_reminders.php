@@ -17,6 +17,7 @@ class Cron_reminders extends CI_Controller {
 
 			// now get the contacts
 			foreach ($ts as $t) {
+				$data = array();
 				# code...
 				$cs = $this->transactions_model->get_transaction_contacts($t['id']);
 

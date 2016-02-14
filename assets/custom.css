@@ -91,27 +91,29 @@ body {
 	color: white;
 }
 
-#greeting {
-	font-family: 'Lobster', cursive;
-	font-weight: bold;
-	font-size: 5em;
-	margin-top: 20%;
-	margin-bottom: 5%;
-    -ms-transform: rotate(7deg); /* IE 9 */
-    -webkit-transform: rotate(7deg); /* Chrome, Safari, Opera */
-     transform: rotate(-7deg);
-}
 
 .modal-dialog {
 	margin-top: 15%;
 }
 
 #login {
+	margin: 3vw;
 	display: block;
+	padding-top: 10vw;
 	background-color: #6bdd22;
 	background-image: none;
 	text-align: center;
-	height: 1500px;
+	height: 100vh;
+}
+
+#greeting {
+	font-family: 'Lobster', cursive;
+	font-weight: bold;
+	font-size: 10vw;
+	margin-bottom: 5%;
+    -ms-transform: rotate(7deg); /* IE 9 */
+    -webkit-transform: rotate(7deg); /* Chrome, Safari, Opera */
+     transform: rotate(-7deg);
 }
 
 .modal-title {
