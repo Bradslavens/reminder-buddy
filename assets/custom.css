@@ -109,7 +109,7 @@ body {
 #greeting {
 	font-family: 'Lobster', cursive;
 	font-weight: bold;
-	font-size: 10vw;
+	font-size: 5vw;
 	margin-bottom: 5%;
     -ms-transform: rotate(7deg); /* IE 9 */
     -webkit-transform: rotate(7deg); /* Chrome, Safari, Opera */

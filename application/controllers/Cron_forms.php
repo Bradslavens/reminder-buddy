@@ -11,6 +11,7 @@ class Cron_forms extends CI_Controller {
 
 	public function send ($token = 1)
 	{
+		
 		if($token == '677'){
 
 			// transactions status = active '1'

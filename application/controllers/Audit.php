@@ -155,7 +155,6 @@ class Audit extends CI_Controller {
 	}
 
 	public function update_checklist_status(){
-		echo "here- update checklist status incontroller";
 		$this->load->model('audit_model');
 		$this->load->helper('form');
 		$this->load->library('form_validation');

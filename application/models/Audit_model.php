@@ -212,7 +212,7 @@ items.body as body, contacts.first_name as first_name, contacts.last_name as las
 		{
 			# code...set transactio item parties complete to 0 where transactino_item_id
 			$this->db->where('transaction_item_id', $value['id']);
-			$this->db->where('audit', $this->new_audit_number);
+			$this->db->where('audit', $this->session->userdata('aud_number'));
 			$data_reset = array('complete' => 0);
 			$this->db->update('transaction_item_parties', $data_reset);
 		}
@@ -243,18 +243,62 @@ items.body as body, contacts.first_name as first_name, contacts.last_name as las
 				// and where transaction item id =
 				// set to complete
 				$this->db->where('transaction_id' , $_SESSION['transaction_id']);
-				$this->db->where('party', 1);  // 1 is buyer
-				$this->db->or_where('party', 3);  // 3 is buyer
+				$this->db->where('(party=1 OR party=3)', NULL);  // 1 is buyer 3 is buyers agent
 				$t_parties = $this->db->get('transaction_parties');
 				foreach ($t_parties->result_array() as $t_party) 
 				{
 					$this->db->where('transaction_party_id', $t_party['id']);
 					$this->db->where('transaction_item_id', $tips);
-					$this->db->where('audit', $this->new_audit_number);
+					$this->db->where('audit', $this->session->userdata('aud_number'));
 					$this->db->update('transaction_item_parties', array('complete'=>1));
 				}
 			}
 		}
+
+		// check if 'all_seller_signed'  signed 
+		if($this->input->post('all_seller_signed' ))
+		{
+			foreach ($this->input->post('all_seller_signed' ) as $tips) 
+			{
+				// get transaction parites = to buyers id is 1 
+				// get all transaction item parties where party = buyer -- above
+				// and where transaction item id =
+				// set to complete
+				$this->db->where('transaction_id' , $_SESSION['transaction_id']);
+				$this->db->where('(party=4 OR party=8)', NULL);  // 4 sellers 8 sellers agent
+				$t_parties = $this->db->get('transaction_parties');
+				foreach ($t_parties->result_array() as $t_party) 
+				{
+					$this->db->where('transaction_party_id', $t_party['id']);
+					$this->db->where('transaction_item_id', $tips);
+					$this->db->where('audit', $this->session->userdata('aud_number'));
+					$this->db->update('transaction_item_parties', array('complete'=>1));
+				}
+			}
+		}
+		
+		// check if 'all_signed'  signed 
+		if($this->input->post('all_signed' ))
+		{
+			foreach ($this->input->post('all_signed' ) as $tips) 
+			{
+				// get transaction parites = to buyers id is 8 
+				// get all transaction item parties where party = buyer -- above
+				// and where transaction item id =
+				// set to complete
+				$this->db->where('transaction_id' , $_SESSION['transaction_id']);
+				$t_parties = $this->db->get('transaction_parties');
+				foreach ($t_parties->result_array() as $t_party) 
+				{
+					$this->db->where('transaction_party_id', $t_party['id']);
+					$this->db->where('transaction_item_id', $tips);
+					$this->db->where('audit',  $this->session->userdata('aud_number'));
+					$this->db->update('transaction_item_parties', array('complete'=>1));
+				}
+			}
+		}
+
+
 	}
 
 

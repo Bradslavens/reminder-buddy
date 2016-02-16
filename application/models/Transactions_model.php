@@ -563,13 +563,13 @@ public function add_item()
 				// and where transaction item id =
 				// set to complete
 				$this->db->where('transaction_id' , $_SESSION['transaction_id']);
-				$this->db->where('party', 1);  // 1 is buyer
-				$this->db->or_where('party', 3);  // 3 is buyer
+				$this->db->where('(party=1 OR party=3)', NULL);  // 1 is buyer 3 is buyers agent
 				$t_parties = $this->db->get('transaction_parties');
 				foreach ($t_parties->result_array() as $t_party) 
 				{
 					$this->db->where('transaction_party_id', $t_party['id']);
 					$this->db->where('transaction_item_id', $tips);
+					$this->db->where('audit', 0);
 					$this->db->update('transaction_item_parties', array('complete'=>1));
 				}
 			}
@@ -586,13 +586,13 @@ public function add_item()
 				// and where transaction item id =
 				// set to complete
 				$this->db->where('transaction_id' , $_SESSION['transaction_id']);
-				$this->db->where('party', 8);  // 8 is seller
-				$this->db->or_where('party', 4);  // 4 is seller
+				$this->db->where('(party=8 OR party=4)', NULL);  // 1 is buyer 3 is buyers agent
 				$t_parties = $this->db->get('transaction_parties');
 				foreach ($t_parties->result_array() as $t_party) 
 				{
 					$this->db->where('transaction_party_id', $t_party['id']);
 					$this->db->where('transaction_item_id', $tips);
+					$this->db->where('audit', 0);
 					$this->db->update('transaction_item_parties', array('complete'=>1));
 				}
 			}
@@ -614,6 +614,7 @@ public function add_item()
 				{
 					$this->db->where('transaction_party_id', $t_party['id']);
 					$this->db->where('transaction_item_id', $tips);
+					$this->db->where('audit', 0);
 					$this->db->update('transaction_item_parties', array('complete'=>1));
 				}
 			}
