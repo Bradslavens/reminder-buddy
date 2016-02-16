@@ -88,7 +88,7 @@
       <?php foreach ($checklist_items as $checklist_item): ?>
       <div>
         <tr>
-          <td><?php if($checklist_item['all_signed'] == 0){ echo "Incomplete"; }else{echo "Complete"; } ?><br />
+          <td class="complete"><?php if($checklist_item['all_signed'] == 0){ echo "Incomplete"; }else{echo "Complete"; } ?><br />
             <a href="<?php echo 'del_item/' . $checklist_item['id']; ?>"><span title = "Click to Delete this item" class="glyphicon glyphicon-trash" aria-hidden="true"></span></a> 
             <a class ="show_signers" title="Show All Signers" href="#"><span title = "Click to show individual signers" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a>
           </td>

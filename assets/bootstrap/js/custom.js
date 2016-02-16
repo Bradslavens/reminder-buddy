@@ -234,4 +234,6 @@
 	      });
 
 
+		$(".complete:contains(Incomplete)").css('background-color','yellow');
+
 	});
