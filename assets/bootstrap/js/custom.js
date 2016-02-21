@@ -66,8 +66,8 @@
 	        var itemName = $("#description").val();
 	        // send ajax request to php and get results
 	        $.get(
-	          "http://dev.tc-helper2/proc/form_list", 
-	          // "http://tc.srsample.us/proc/form_list", //production
+	          // "http://dev.tc-helper2/proc/form_list", 
+	          "http://tc.srsample.us/proc/form_list", //production
 	          {short_name: itemName}
 	        )
 	        .done(successFn)
